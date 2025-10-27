@@ -218,7 +218,7 @@ else
 endif
 
 clean: clean_c
-	rm -rf $(APP)/*.bin $(APP)/*.elf $(OUT_CONFIG)
+	rm -rf $(APP)/*.bin $(APP)/*.elf $(APP)/*.asm $(OUT_CONFIG)
 	cargo clean
 
 clean_c::
