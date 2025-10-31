@@ -13,6 +13,11 @@ use crate::AxDeviceEnum;
 #[cfg(feature = "virtio")]
 use crate::virtio::{self, VirtIoDevMeta};
 
+unsafe extern "C" {
+    fn _sinitrd();
+    fn _einitrd();
+}
+
 pub trait DriverProbe {
     fn probe_global() -> Option<AxDeviceEnum> {
         None
@@ -68,7 +73,8 @@ cfg_if::cfg_if! {
         impl DriverProbe for RamDiskDriver {
             fn probe_global() -> Option<AxDeviceEnum> {
                 // FIXME: this configuration is specific to 2k1000la!
-                let (start, size) = axconfig::devices::INITRD_RANGE;
+                let start = _sinitrd as usize;
+                let size = _einitrd as usize - start;
                 let initrd = unsafe { RamDisk::new(phys_to_virt(start.into()).into(), size) };
                 Some(AxDeviceEnum::from_block(initrd))
             }

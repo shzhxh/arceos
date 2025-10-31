@@ -169,6 +169,8 @@ else ifeq ($(PLAT_NAME), aarch64-bsta1000b)
   include scripts/make/bsta1000b-fada.mk
 endif
 
+# 修改defconfig和oldconfig目标，移除ramdisk_config.sh调用
+
 defconfig:
 	$(call defconfig)
 

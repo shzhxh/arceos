@@ -7,6 +7,9 @@ fn main() {
     if platform != "dummy" {
         gen_linker_script(&arch, platform).unwrap();
     }
+    
+    // 移除对RAMDISK_ADDR和RAMDISK_SIZE的处理，让linker脚本直接定义
+    println!("cargo:rustc-cfg=CONFIG_RAMDISK");
 }
 
 fn gen_linker_script(arch: &str, platform: &str) -> Result<()> {
@@ -25,6 +28,9 @@ fn gen_linker_script(arch: &str, platform: &str) -> Result<()> {
         &format!("{:#x}", axconfig::plat::KERNEL_BASE_VADDR),
     );
     let ld_content = ld_content.replace("%CPU_NUM%", &format!("{}", axconfig::plat::CPU_NUM));
+
+    // 启用ramdisk相关定义
+    let ld_content = ld_content.replace("#ifdef CONFIG_RAMDISK", "#define CONFIG_RAMDISK\n");
 
     // target/<target_triple>/<mode>/build/axhal-xxxx/out
     let out_dir = std::env::var("OUT_DIR").unwrap();
