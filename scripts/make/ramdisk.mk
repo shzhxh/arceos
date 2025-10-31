@@ -12,13 +12,10 @@ ifeq ($(HAS_RAMDISK),driver-ramdisk)
   $(RAMDISK_OBJ): $(RAMDISK_IMG)
 	@printf "    $(GREEN_C)Generating$(END_C) ramdisk object file\n"
 	@mkdir -p $(dir $(RAMDISK_OBJ))
-	@$(OBJCOPY) -I binary -O elf64-aarch64 -B aarch64 --rename-section .data=.initrd,alloc,load,contents,readonly "$(RAMDISK_IMG)" "$(RAMDISK_OBJ)"
-
-  # 直接传递ramdisk.o文件路径，这是最可靠的方式
-  RAMDISK_LDFLAGS := -Clink-arg="$(RAMDISK_OBJ)"
+	@$(OBJCOPY) -I binary -O elf64-littleaarch64 -B aarch64 --rename-section .data=.initrd,alloc,load,contents,readonly "$(RAMDISK_IMG)" "$(RAMDISK_OBJ)"
 
   # Update rust flags
-  RUSTFLAGS += $(RAMDISK_LDFLAGS)
+  RUSTFLAGS += -C link-arg=--whole-archive  -C link-arg=$(RAMDISK_OBJ) -C link-arg=--no-whole-archive
 
   # Ensure ramdisk target is built before kernel
   _cargo_build: $(RAMDISK_OBJ)
