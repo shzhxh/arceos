@@ -72,10 +72,9 @@ cfg_if::cfg_if! {
 
         impl DriverProbe for RamDiskDriver {
             fn probe_global() -> Option<AxDeviceEnum> {
-                // FIXME: this configuration is specific to 2k1000la!
                 let start = _sinitrd as usize;
                 let size = _einitrd as usize - start;
-                let initrd = unsafe { RamDisk::new(phys_to_virt(start.into()).into(), size) };
+                let initrd = unsafe { RamDisk::new(start.into(), size) };
                 Some(AxDeviceEnum::from_block(initrd))
             }
         }

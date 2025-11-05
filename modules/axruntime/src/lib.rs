@@ -207,7 +207,9 @@ pub fn rust_main(cpu_id: usize, arg: usize) -> ! {
                     .expect("No block device found!");
                 info!("Block device: {}", dev.device_name());
                 let fs = axfs_ng::fs::new_default(dev).expect("Failed to initialize filesystem");
+                info!("Filesystem: {}", fs.name()); // szx dbg
                 let mount = axfs_ng_vfs::Mountpoint::new_root(&fs);
+                info!("Mountpoint: {:?}", mount);   // szx dbg
                 axfs_ng::FsContext::new(mount.root_location())
             });
         }

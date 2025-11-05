@@ -1,7 +1,7 @@
 # Main building script
 
 include scripts/make/cargo.mk
-include scripts/make/ramdisk.mk  # 添加这一行，引入ramdisk处理逻辑
+include scripts/make/ramdisk.mk
 
 ifeq ($(APP_TYPE), c)
   include scripts/make/build_c.mk

@@ -15,7 +15,12 @@ ifeq ($(HAS_RAMDISK),driver-ramdisk)
 	@$(OBJCOPY) -I binary -O elf64-littleaarch64 -B aarch64 --rename-section .data=.initrd,alloc,load,contents,readonly "$(RAMDISK_IMG)" "$(RAMDISK_OBJ)"
 
   # Update rust flags
-  RUSTFLAGS += -C link-arg=--whole-archive  -C link-arg=$(RAMDISK_OBJ) -C link-arg=--no-whole-archive
+  RUSTFLAGS += -C link-arg=--whole-archive -C link-arg=$(RAMDISK_OBJ) -C link-arg=--no-whole-archive
+
+  # 确保ramdisk.o被显式添加到链接过程中
+  ifeq ($(APP_TYPE), rust)
+    rust_elf_deps += $(RAMDISK_OBJ)
+  endif
 
   # Ensure ramdisk target is built before kernel
   _cargo_build: $(RAMDISK_OBJ)

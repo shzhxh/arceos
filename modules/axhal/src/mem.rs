@@ -73,6 +73,12 @@ pub fn init() {
         flags: MemRegionFlags::RESERVED | MemRegionFlags::READ | MemRegionFlags::WRITE,
         name: ".bss",
     });
+    push(PhysMemRegion {
+        paddr: virt_to_phys((_sinitrd as usize).into()),
+        size: _einitrd as usize - _sinitrd as usize,
+        flags: MemRegionFlags::RESERVED | MemRegionFlags::READ | MemRegionFlags::WRITE,
+        name: ".initrd",
+    });
 
     // Push MMIO & reserved regions
     for &(start, size) in mmio_ranges() {
@@ -122,4 +128,6 @@ unsafe extern "C" {
     fn _ekernel();
     fn boot_stack();
     fn boot_stack_top();
+    unsafe fn _sinitrd();
+    unsafe fn _einitrd();
 }

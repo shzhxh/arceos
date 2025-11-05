@@ -118,14 +118,14 @@ SECTIONS
         _ebss = .;
     }
 
-    _ekernel = .;
-
   /* 独立的 .initrd 段：专门放置 ramdisk FAT32 文件系统镜像 */
     .initrd : ALIGN(4K) {
         _sinitrd = .;  /* 起始地址符号 */
-        *(.initrd);  /* 包含所有 .initrd 段 */
+        KEEP(*(.initrd));  /* 包含所有 .initrd 段 */
         _einitrd = .;  /* 结束地址符号 */
     }
+
+    _ekernel = .;
 
     /DISCARD/ : {
         *(.comment) *(.gnu*) *(.note*) *(.eh_frame*)
